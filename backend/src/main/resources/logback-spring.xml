@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="SECRET_REGEX"
+              value="(?i)(password|passwd|pwd|secret|token|authorization|api[-_]?key)(\s*[=:]\s*)(&quot;[^&quot;]*&quot;|[^\s,;&amp;]+)"/>
+    <property name="EMAIL_REGEX"
+              value="([A-Za-z0-9._%+-])[A-Za-z0-9._%+-]*(@[A-Za-z0-9.-]+\.[A-Za-z]{2,})"/>
+    <property name="CARD_REGEX"
+              value="\b(\d{4})\d{6,11}(\d{4})\b"/>
+
+    <property name="MASK_MSG"
+              value="%replace(%replace(%replace(%msg){'${SECRET_REGEX}','$1$2***'}){'${EMAIL_REGEX}','$1***$2'}){'${CARD_REGEX}','$1************$2'}"/>
+    <property name="MASK_EX"
+              value="%replace(%replace(%replace(%ex){'${SECRET_REGEX}','$1$2***'}){'${EMAIL_REGEX}','$1***$2'}){'${CARD_REGEX}','$1************$2'}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [traceId=%X{traceId:-none}] %logger{36} - ${MASK_MSG}${MASK_EX}%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

@@ -1,0 +1,73 @@
+<div class="space-y-1.5">
+  @if (label()) {
+    <label [for]="inputId()" class="block text-sm font-medium text-slate-200">
+      {{ label() }}
+      @if (required()) {
+        <span class="text-rose-400" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <div class="relative">
+    <input
+      [id]="inputId()"
+      type="text"
+      role="combobox"
+      aria-autocomplete="list"
+      autocomplete="off"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-controls]="isOpen() ? listId() : null"
+      [attr.aria-activedescendant]="activeOptionId()"
+      [attr.aria-describedby]="hint() || showError() ? descriptionId() : null"
+      [attr.aria-invalid]="showError() ? 'true' : null"
+      [value]="displayValue()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [class]="inputClasses()"
+      (focus)="onFocus()"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      (blur)="onBlur()"
+    />
+
+    <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+      </svg>
+    </span>
+
+    @if (isOpen()) {
+      <ul
+        [id]="listId()"
+        role="listbox"
+        class="absolute left-0 right-0 top-full z-20 mt-1 max-h-60 overflow-auto rounded-lg border border-white/10 bg-slate-900 py-1 shadow-xl"
+      >
+        @if (filteredOptions().length === 0) {
+          <li class="px-3 py-2 text-xs text-slate-500">{{ emptyText() }}</li>
+        } @else {
+          @for (option of filteredOptions(); track option.value; let index = $index) {
+            <li
+              [id]="optionId(index)"
+              role="option"
+              [attr.aria-selected]="option.value === selectedValue()"
+              [class]="optionClasses(index)"
+              (mousedown)="$event.preventDefault()"
+              (click)="select(option)"
+            >
+              <span class="truncate text-sm text-slate-200">{{ option.label }}</span>
+              @if (option.description) {
+                <span class="truncate text-xs text-slate-500">{{ option.description }}</span>
+              }
+            </li>
+          }
+        }
+      </ul>
+    }
+  </div>
+
+  @if (showError()) {
+    <p class="text-xs text-rose-300">{{ message() }}</p>
+  } @else if (hint()) {
+    <p [id]="descriptionId()" class="text-xs text-slate-400">{{ hint() }}</p>
+  }
+</div>

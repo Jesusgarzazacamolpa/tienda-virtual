@@ -1,0 +1,46 @@
+<section id="metodologia" class="relative overflow-hidden bg-ink-900 py-20 sm:py-24">
+  <div class="pointer-events-none absolute inset-0 hero-glow opacity-70" aria-hidden="true"></div>
+
+  <div class="section-shell relative">
+    <app-section-heading
+      eyebrow="Metodología"
+      tone="dark"
+      title="El músculo técnico detrás de tu negocio."
+      description="Construimos software sin atajos. Utilizamos lenguajes y frameworks de grado empresarial, garantizando que el código fuente que te entregamos sea seguro, mantenible y escalable."
+    />
+
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      @for (pillar of pillars; track pillar.title) {
+        <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-7">
+          <span class="grid h-11 w-11 place-items-center rounded-xl bg-sky-400/10 text-sky-300">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5" aria-hidden="true">
+              @for (path of pillar.paths; track path) {
+                <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="path" />
+              }
+            </svg>
+          </span>
+          <h3 class="mt-5 text-base font-semibold text-white">{{ pillar.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">{{ pillar.description }}</p>
+        </article>
+      }
+    </div>
+
+    <div
+      class="mt-12 flex flex-col items-start justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 sm:flex-row sm:items-center"
+    >
+      <p class="text-sm text-slate-300">
+        <span class="font-semibold text-white">¿Quieres validar tu arquitectura actual?</span>
+        Revisamos riesgos, deuda técnica y oportunidades de automatización.
+      </p>
+      <a
+        href="#contacto"
+        class="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink-950 transition hover:bg-slate-200"
+      >
+        Solicitar diagnóstico
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

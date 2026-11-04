@@ -1,0 +1,653 @@
+<section class="space-y-6">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-300">UX Toolkit</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-white">Ejemplos de formularios</h1>
+      <p class="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">
+        Patrones listos para copiar: alta de cliente, invitación de usuarios, preferencias, carga con skeleton y
+        diálogo de confirmación. Todos usan Reactive Forms con validación en vivo y los componentes compartidos.
+      </p>
+    </div>
+    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300">
+      Solo demo · sin llamadas al backend
+    </span>
+  </div>
+
+  <div class="grid gap-6 xl:grid-cols-2">
+    <article class="rounded-2xl border border-white/10 bg-slate-900/40 xl:col-span-2">
+      <header class="flex items-start gap-3 border-b border-white/10 px-6 py-5">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-300">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"
+            />
+          </svg>
+        </span>
+        <div>
+          <h2 class="text-base font-semibold text-white">Alta de cliente</h2>
+          <p class="mt-0.5 text-sm text-slate-400">
+            Máscaras, select, textarea, toggle y carga de archivo en un solo flujo.
+          </p>
+        </div>
+      </header>
+
+      <form [formGroup]="clientForm" (ngSubmit)="submitClient()" class="space-y-5 px-6 py-5" novalidate>
+        @if (clientSaved(); as saved) {
+          <div
+            class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
+            role="status"
+          >
+            <p class="font-medium">Cliente listo para enviar (simulación)</p>
+            <p class="mt-1 text-xs leading-relaxed text-emerald-200/80">
+              {{ saved.company }} · {{ saved.contact }} · {{ saved.email }} · {{ saved.industry }} ·
+              Ejecutivo: {{ saved.owner }} · {{ saved.employees }} empleados · Logo: {{ saved.logo }} ·
+              {{ saved.notifications ? 'Acepta avisos por correo' : 'Sin avisos por correo' }}
+            </p>
+          </div>
+        }
+
+        <div #companySearchWrap class="relative rounded-xl border border-dashed border-white/10 bg-slate-950/30 p-4">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <p class="text-sm font-medium text-slate-200">Autocompletar desde el directorio</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Busca una empresa y el formulario se llena con
+                <code class="font-mono text-slate-300">patchValue</code>.
+              </p>
+            </div>
+            @if (companyApplied(); as company) {
+              <span
+                class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300"
+              >
+                {{ company }}
+              </span>
+            }
+          </div>
+
+          <div class="mt-3">
+            <app-smart-search
+              placeholder="Buscar empresa, contacto o correo"
+              (searchChange)="onCompanySearch($event)"
+              (keydown.enter)="$event.preventDefault()"
+            />
+          </div>
+
+          @if (companyResultsOpen() && companyQuery().trim().length > 0) {
+            <div
+              class="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-lg border border-white/10 bg-slate-900 shadow-xl"
+            >
+              @if (companyResults().length === 0) {
+                <p class="px-3 py-2 text-xs text-slate-500">Sin coincidencias. Completa los campos manualmente.</p>
+              } @else {
+                <ul class="max-h-64 divide-y divide-white/5 overflow-auto">
+                  @for (company of companyResults(); track company.id) {
+                    <li>
+                      <button
+                        type="button"
+                        class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition hover:bg-white/5"
+                        (click)="applyCompany(company)"
+                      >
+                        <span class="min-w-0">
+                          <span class="block truncate text-sm text-slate-200">{{ company.companyName }}</span>
+                          <span class="block truncate text-xs text-slate-500">
+                            {{ company.contactName }} · {{ company.email }}
+                          </span>
+                        </span>
+                        <span class="shrink-0 text-xs font-medium text-brand-300">Usar</span>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <app-form-input
+            formControlName="companyName"
+            label="Empresa"
+            placeholder="Agencia Demo S.A. de C.V."
+            autocomplete="organization"
+            [required]="true"
+            [maxlength]="120"
+          />
+
+          <app-form-input
+            formControlName="contactName"
+            label="Contacto"
+            placeholder="Ana López"
+            autocomplete="name"
+            [required]="true"
+            [maxlength]="100"
+          />
+
+          <app-form-input
+            formControlName="email"
+            label="Correo corporativo"
+            type="email"
+            placeholder="ana@empresa.com"
+            autocomplete="email"
+            [required]="true"
+          />
+
+          <app-form-input
+            formControlName="phone"
+            label="Teléfono"
+            mask="phone"
+            placeholder="555 123 4567"
+            autocomplete="tel"
+            hint="10 dígitos; se formatea automáticamente."
+            [required]="true"
+          />
+
+          <app-form-input
+            formControlName="employees"
+            label="Empleados"
+            mask="digits"
+            placeholder="25"
+            hint="Solo números."
+            [required]="true"
+          />
+
+          <app-form-input
+            formControlName="website"
+            label="Sitio web"
+            placeholder="https://empresa.com"
+            hint="Opcional. Debe iniciar con http:// o https://."
+          />
+
+          <div class="space-y-1.5">
+            <label for="client-industry" class="block text-sm font-medium text-slate-200">
+              Industria
+              <span class="text-rose-400" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="client-industry"
+              formControlName="industry"
+              [class]="controlClasses(clientForm, 'industry')"
+            >
+              <option value="">Selecciona una industria</option>
+              @for (industry of industries; track industry.value) {
+                <option [value]="industry.value">{{ industry.label }}</option>
+              }
+            </select>
+            @if (showError(clientForm, 'industry')) {
+              <p class="text-xs text-rose-300">Selecciona una industria.</p>
+            }
+          </div>
+
+          <app-search-select
+            formControlName="owner"
+            label="Ejecutivo de cuenta"
+            placeholder="Buscar por nombre o zona"
+            hint="Escribe para filtrar el equipo."
+            [options]="accountManagers"
+            [required]="true"
+          />
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="space-y-1.5">
+            <label for="client-notes" class="block text-sm font-medium text-slate-200">Notas</label>
+            <textarea
+              id="client-notes"
+              formControlName="notes"
+              rows="4"
+              maxlength="500"
+              placeholder="Contexto, requerimientos o acuerdos relevantes…"
+              [class]="controlClasses(clientForm, 'notes', 'min-h-24 resize-y')"
+            ></textarea>
+            @if (showError(clientForm, 'notes')) {
+              <p class="text-xs text-rose-300">Máximo 500 caracteres.</p>
+            } @else {
+              <p class="text-xs text-slate-400">{{ clientForm.controls.notes.value.length }}/500 caracteres</p>
+            }
+          </div>
+
+          <div class="space-y-4">
+            <app-file-uploader
+              title="Logo de la empresa"
+              hint="PNG, JPG o SVG · Máximo 2 MB"
+              [accept]="['.png', '.jpg', '.jpeg', '.svg']"
+              [maxSizeMb]="2"
+              (filesSelected)="onLogoSelected($event)"
+            />
+
+            <label
+              class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3"
+            >
+              <span>
+                <span class="block text-sm font-medium text-slate-200">Avisos por correo</span>
+                <span class="block text-xs text-slate-500">Resumen semanal de actividad y cobranza.</span>
+              </span>
+              <span class="relative inline-flex shrink-0 items-center">
+                <input type="checkbox" formControlName="notifications" class="peer sr-only" />
+                <span
+                  class="h-6 w-11 rounded-full bg-white/10 transition peer-checked:bg-brand-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40"
+                ></span>
+                <span
+                  class="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition peer-checked:translate-x-5"
+                ></span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-4">
+          <button
+            type="button"
+            class="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+            (click)="resetClient()"
+          >
+            Limpiar
+          </button>
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="clientSaving()"
+          >
+            @if (clientSaving()) {
+              <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            }
+            {{ clientSaving() ? 'Guardando…' : 'Registrar cliente' }}
+          </button>
+        </div>
+      </form>
+    </article>
+
+    <article class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/40">
+      <header class="flex items-start gap-3 border-b border-white/10 px-6 py-5">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-300">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+            />
+          </svg>
+        </span>
+        <div>
+          <h2 class="text-base font-semibold text-white">Invitación de usuario</h2>
+          <p class="mt-0.5 text-sm text-slate-400">Correo, rol con tarjetas de radio y mensaje personal.</p>
+        </div>
+      </header>
+
+      <form [formGroup]="inviteForm" (ngSubmit)="submitInvite()" class="flex flex-1 flex-col gap-5 px-6 py-5" novalidate>
+        @if (inviteSentTo(); as email) {
+          <div
+            class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
+            role="status"
+          >
+            Invitación simulada para <span class="font-medium">{{ email }}</span
+            >. Revisa la consola para conectar el envío real.
+          </div>
+        }
+
+        <app-form-input
+          formControlName="email"
+          label="Correo del invitado"
+          type="email"
+          placeholder="nuevo@empresa.com"
+          autocomplete="email"
+          [required]="true"
+        />
+
+        <fieldset class="space-y-2">
+          <legend class="text-sm font-medium text-slate-200">
+            Rol inicial <span class="text-rose-400" aria-hidden="true">*</span>
+          </legend>
+
+          @for (role of inviteRoles; track role.value) {
+            <label
+              class="flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3 transition"
+              [class]="
+                inviteForm.controls.role.value === role.value
+                  ? 'border-brand-400/60 bg-brand-500/10'
+                  : 'border-white/10 bg-slate-950/40 hover:border-white/20'
+              "
+            >
+              <input
+                type="radio"
+                formControlName="role"
+                [value]="role.value"
+                class="mt-0.5 h-4 w-4 border-white/20 bg-slate-900 text-brand-500 focus:ring-2 focus:ring-brand-500/40"
+              />
+              <span>
+                <span class="block text-sm font-medium text-slate-200">{{ role.label }}</span>
+                <span class="block text-xs text-slate-500">{{ role.description }}</span>
+              </span>
+            </label>
+          }
+        </fieldset>
+
+        <div class="space-y-1.5">
+          <label for="invite-message" class="block text-sm font-medium text-slate-200">Mensaje personal</label>
+          <textarea
+            id="invite-message"
+            formControlName="message"
+            rows="3"
+            maxlength="300"
+            placeholder="Te damos la bienvenida al backoffice…"
+            [class]="controlClasses(inviteForm, 'message', 'min-h-20 resize-y')"
+          ></textarea>
+          @if (showError(inviteForm, 'message')) {
+            <p class="text-xs text-rose-300">Máximo 300 caracteres.</p>
+          }
+        </div>
+
+        <div class="mt-auto flex flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-4">
+          <button
+            type="button"
+            class="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+            (click)="resetInvite()"
+          >
+            Limpiar
+          </button>
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="inviteSaving()"
+          >
+            @if (inviteSaving()) {
+              <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            }
+            {{ inviteSaving() ? 'Enviando…' : 'Enviar invitación' }}
+          </button>
+        </div>
+      </form>
+    </article>
+
+    <article class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/40">
+      <header class="flex items-start gap-3 border-b border-white/10 px-6 py-5">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-300">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.212-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+            />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+        </span>
+        <div>
+          <h2 class="text-base font-semibold text-white">Preferencias de notificación</h2>
+          <p class="mt-0.5 text-sm text-slate-400">Selects, número con límites y switches tipo configuración.</p>
+        </div>
+      </header>
+
+      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="flex flex-1 flex-col gap-5 px-6 py-5" novalidate>
+        @if (settingsSaved()) {
+          <div
+            class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
+            role="status"
+          >
+            Preferencias guardadas (simulación).
+          </div>
+        }
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="space-y-1.5">
+            <label for="settings-language" class="block text-sm font-medium text-slate-200">Idioma</label>
+            <select
+              id="settings-language"
+              formControlName="language"
+              [class]="controlClasses(settingsForm, 'language')"
+            >
+              @for (language of languages; track language.value) {
+                <option [value]="language.value">{{ language.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="settings-timezone" class="block text-sm font-medium text-slate-200">Zona horaria</label>
+            <select
+              id="settings-timezone"
+              formControlName="timezone"
+              [class]="controlClasses(settingsForm, 'timezone')"
+            >
+              @for (timezone of timezones; track timezone.value) {
+                <option [value]="timezone.value">{{ timezone.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <app-form-input
+          formControlName="sessionMinutes"
+          label="Cierre de sesión (minutos)"
+          type="number"
+          hint="Entre 5 y 480 minutos."
+          [required]="true"
+        />
+
+        <div class="space-y-3">
+          <label
+            class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3"
+          >
+            <span>
+              <span class="block text-sm font-medium text-slate-200">Resumen semanal</span>
+              <span class="block text-xs text-slate-500">Correo con actividad de usuarios y alertas.</span>
+            </span>
+            <span class="relative inline-flex shrink-0 items-center">
+              <input type="checkbox" formControlName="digest" class="peer sr-only" />
+              <span
+                class="h-6 w-11 rounded-full bg-white/10 transition peer-checked:bg-brand-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40"
+              ></span>
+              <span
+                class="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition peer-checked:translate-x-5"
+              ></span>
+            </span>
+          </label>
+
+          <label
+            class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3"
+          >
+            <span>
+              <span class="block text-sm font-medium text-slate-200">Novedades del producto</span>
+              <span class="block text-xs text-slate-500">Avisos de nuevas versiones del backoffice.</span>
+            </span>
+            <span class="relative inline-flex shrink-0 items-center">
+              <input type="checkbox" formControlName="productUpdates" class="peer sr-only" />
+              <span
+                class="h-6 w-11 rounded-full bg-white/10 transition peer-checked:bg-brand-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40"
+              ></span>
+              <span
+                class="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition peer-checked:translate-x-5"
+              ></span>
+            </span>
+          </label>
+        </div>
+
+        <div class="mt-auto flex flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-4">
+          <button
+            type="button"
+            class="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+            (click)="resetSettings()"
+          >
+            Restablecer
+          </button>
+          <button
+            type="submit"
+            class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+          >
+            Guardar preferencias
+          </button>
+        </div>
+      </form>
+    </article>
+
+    <article class="flex flex-col rounded-2xl border border-white/10 bg-slate-900/40 xl:col-span-2">
+      <header class="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 px-6 py-5">
+        <div class="flex items-start gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-300">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+              />
+            </svg>
+          </span>
+          <div>
+            <h2 class="text-base font-semibold text-white">Carga de información</h2>
+            <p class="mt-0.5 text-sm text-slate-400">
+              SkeletonLoader mientras llegan los datos, sin saltos de layout ni pantallas vacías.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-200 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+          [disabled]="membersLoading()"
+          (click)="simulateMembersLoad()"
+        >
+          @if (membersLoading()) {
+            <span class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+          }
+          {{ membersLoading() ? 'Cargando…' : 'Simular carga' }}
+        </button>
+      </header>
+
+      <div class="grid gap-6 px-6 py-5 md:grid-cols-2">
+        <div class="flex flex-col gap-3">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Vista del componente</p>
+          <div class="flex flex-1 items-center rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <app-skeleton-loader class="block w-full" [rows]="4" [columns]="3" />
+          </div>
+          <p class="text-xs text-slate-500">
+            <code class="font-mono text-slate-300">&lt;app-skeleton-loader [rows]="4" [columns]="3" /&gt;</code>
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Últimos accesos</p>
+            <span class="text-xs text-slate-500">{{ membersLoading() ? 'Cargando datos…' : 'Actualizado' }}</span>
+          </div>
+          <div class="flex min-h-72 flex-col rounded-xl border border-white/10 bg-slate-950/40" aria-live="polite">
+            @if (membersLoading()) {
+              <div class="flex flex-1 items-center p-4">
+                <app-skeleton-loader class="block w-full" [rows]="5" [columns]="3" />
+              </div>
+            } @else {
+              <ul class="divide-y divide-white/5">
+                @for (member of recentMembers; track member.email) {
+                  <li class="flex items-center gap-3 px-4 py-2.5">
+                    <span
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-500/15 text-xs font-semibold text-brand-200"
+                    >
+                      {{ member.initials }}
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate text-sm text-slate-200">{{ member.name }}</span>
+                      <span class="block truncate text-xs text-slate-500">{{ member.email }}</span>
+                    </span>
+                    <span
+                      class="shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[11px] font-medium text-slate-400"
+                    >
+                      {{ member.role }}
+                    </span>
+                    <span class="hidden shrink-0 text-xs text-slate-500 sm:block">{{ member.access }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="flex flex-col rounded-2xl border border-white/10 bg-slate-900/40 xl:col-span-2">
+      <header class="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 px-6 py-5">
+        <div class="flex items-start gap-3">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rose-500/10 text-rose-300">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5" aria-hidden="true">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+              />
+            </svg>
+          </span>
+          <div>
+            <h2 class="text-base font-semibold text-white">Diálogo de confirmación</h2>
+            <p class="mt-0.5 text-sm text-slate-400">
+              Diálogo genérico para acciones destructivas, con foco atrapado, Escape y backdrop configurable.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-200 transition hover:border-rose-400/50 hover:text-rose-100"
+          (click)="openDialog()"
+        >
+          Eliminar plantilla
+        </button>
+      </header>
+
+      <div class="grid gap-6 px-6 py-5 md:grid-cols-2">
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cuándo usarlo</p>
+          <ul class="list-disc space-y-1.5 pl-5 text-sm text-slate-400">
+            <li>Confirmar acciones destructivas o irreversibles.</li>
+            <li>Bloquea el scroll y mantiene el foco dentro del diálogo.</li>
+            <li>Cierra con Escape, con el botón de cerrar o con el backdrop.</li>
+          </ul>
+          <p class="text-xs text-slate-500">
+            <code class="font-mono text-slate-300">&lt;app-dialog [open]="..." (closed)="..."&gt;</code>
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4" aria-live="polite">
+          @if (dialogConfirmed()) {
+            <div class="flex h-full flex-col justify-center gap-1 text-sm" role="status">
+              <p class="font-medium text-emerald-300">Plantilla eliminada (simulación)</p>
+              <p class="text-xs leading-relaxed text-slate-400">
+                Onboarding B2B se quitó de los flujos activos. Puedes restaurarla desde la papelera.
+              </p>
+            </div>
+          } @else {
+            <div class="flex h-full flex-col justify-center gap-1 text-sm">
+              <p class="font-medium text-slate-200">Sin acciones confirmadas</p>
+              <p class="text-xs leading-relaxed text-slate-500">
+                El resultado de la confirmación se muestra aquí; el pie del diálogo solo se renderiza si proyectas
+                contenido con <code class="font-mono text-slate-400">dialogFooter</code>.
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <app-dialog
+    [open]="dialogOpen()"
+    title="¿Eliminar la plantilla?"
+    description="La plantilla «Onboarding B2B» se quitará de los flujos activos."
+    size="sm"
+    (closed)="closeDialog()"
+  >
+    <p>Esta acción no se puede deshacer. Los registros ya enviados con esta plantilla no se verán afectados.</p>
+
+    <div class="flex flex-wrap items-center justify-end gap-3" dialogFooter>
+      <button
+        type="button"
+        class="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+        (click)="closeDialog()"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+        (click)="confirmDialog()"
+      >
+        Eliminar plantilla
+      </button>
+    </div>
+  </app-dialog>
+</section>

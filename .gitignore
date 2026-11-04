@@ -1,0 +1,23 @@
+# Java / Maven
+backend/target/
+*.class
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+landing/node_modules/
+landing/dist/
+landing/.angular/
+landing/playwright-report/
+landing/test-results/
+
+# Entorno y artefactos locales
+.env
+*.log
+.certs/
+
+# IDE
+.idea/
+.vscode/
+*.iml

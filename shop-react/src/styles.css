@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+
+  --color-ink-950: #05080d;
+  --color-ink-900: #0a111c;
+  --color-ink-800: #111c2c;
+  --color-ink-700: #1b2a3f;
+
+  --color-sand-50: #f6f1e7;
+  --color-sand-100: #eee6d7;
+  --color-sand-200: #e2d6c2;
+
+  --color-signal-300: #7dd3fc;
+  --color-signal-400: #38bdf8;
+  --color-signal-500: #0ea5e9;
+  --color-signal-600: #0284c7;
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-sand-50;
+    background-image:
+      radial-gradient(55rem 55rem at 88% -12%, rgb(14 165 233 / 0.14), transparent 62%),
+      radial-gradient(45rem 45rem at -10% 18%, rgb(125 211 252 / 0.07), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-signal-400 text-ink-950;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-signal-400;
+  }
+
+  * {
+    scrollbar-color: rgb(246 241 231 / 0.22) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(246 241 231 / 0.2);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .surface {
+    @apply rounded-3xl border border-white/10 bg-white/[0.04];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-signal-400 px-6 py-3 text-sm font-semibold text-ink-950;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    @apply bg-signal-300;
+  }
+
+  .btn-primary:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-sand-50;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    @apply border-white/30 bg-white/10;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-sand-100/70;
+  }
+
+  .btn-ghost:hover {
+    @apply bg-white/5 text-sand-50;
+  }
+
+  .chip {
+    @apply inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-sand-100/75;
+  }
+
+  .chip:hover {
+    @apply border-white/25 text-sand-50;
+  }
+
+  .chip-active {
+    @apply border-signal-400/60 bg-signal-400/15 text-signal-300;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-white/15 bg-ink-900/80 px-4 py-3 text-sm text-sand-50 transition;
+  }
+
+  .field::placeholder {
+    color: rgb(246 241 231 / 0.32);
+  }
+
+  .field:hover {
+    @apply border-white/25;
+  }
+
+  .field:focus {
+    @apply border-signal-400 outline-none ring-2 ring-signal-400/30;
+  }
+
+  .field-invalid {
+    @apply border-rose-400/70;
+  }
+
+  .field-invalid:focus {
+    @apply border-rose-400 ring-rose-400/25;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold tracking-[0.22em] text-signal-300 uppercase;
+  }
+
+  .nav-link {
+    @apply rounded-full px-3 py-2 text-sm font-medium text-sand-100/70 transition hover:bg-white/5 hover:text-sand-50;
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .skip-link {
+    @apply fixed top-4 left-4 z-50 -translate-y-24 rounded-full bg-signal-400 px-4 py-2 text-sm font-semibold text-ink-950 transition;
+  }
+
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

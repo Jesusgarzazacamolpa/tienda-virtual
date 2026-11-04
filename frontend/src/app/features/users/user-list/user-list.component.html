@@ -1,0 +1,190 @@
+<section class="space-y-6">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-300">Administración</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-white">Usuarios</h1>
+      <p class="mt-1 text-sm text-slate-400">Gestiona cuentas, roles y estado de acceso.</p>
+    </div>
+
+    @if (isAdmin()) {
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+        (click)="openCreate()"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Nuevo usuario
+      </button>
+    }
+  </div>
+
+  @if (!isAdmin()) {
+    <app-empty-state
+      title="Acceso restringido"
+      message="La gestión de usuarios requiere el rol ADMIN. Pide a un administrador que ajuste tus permisos."
+    />
+  } @else {
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="w-full max-w-sm">
+        <app-smart-search
+          placeholder="Buscar por nombre, apellido o correo"
+          [loading]="loading()"
+          (searchChange)="onSearch($event)"
+        />
+      </div>
+    </div>
+
+    @if (actionError(); as apiError) {
+      <div
+        class="flex items-start justify-between gap-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
+        role="alert"
+      >
+        <span>{{ apiError.message }}</span>
+        <button
+          type="button"
+          aria-label="Descartar error"
+          class="rounded p-1 transition hover:bg-white/10"
+          (click)="actionError.set(null)"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    }
+
+    @if (loadError(); as apiError) {
+      <div
+        class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
+        role="alert"
+      >
+        <span>{{ apiError.message }}</span>
+        <button
+          type="button"
+          class="rounded-lg border border-rose-400/40 px-3 py-1.5 text-xs font-medium transition hover:bg-rose-500/10"
+          (click)="load()"
+        >
+          Reintentar
+        </button>
+      </div>
+    } @else {
+      <app-data-table
+        [columns]="columns"
+        [rows]="users()"
+        [loading]="loading()"
+        [emptyTitle]="emptyTitle()"
+        [emptyMessage]="emptyMessage()"
+        [emptyActionLabel]="emptyActionLabel()"
+        [trackBy]="trackByUser"
+        (rowClick)="openEdit($event)"
+        (emptyAction)="openCreate()"
+      >
+        <ng-template #rowActions let-user>
+          <div class="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              class="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              (click)="openEdit(user)"
+            >
+              Editar
+            </button>
+
+            <button
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+              [class]="
+                user.enabled
+                  ? 'border-rose-500/30 text-rose-300 hover:bg-rose-500/10'
+                  : 'border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10'
+              "
+              [disabled]="isToggling(user.id) || (isSelf(user) && user.enabled)"
+              [attr.title]="isSelf(user) && user.enabled ? 'No puedes desactivar tu propia cuenta' : null"
+              (click)="toggleStatus(user)"
+            >
+              @if (isToggling(user.id)) {
+                <span class="h-3 w-3 animate-spin rounded-full border-2 border-current/30 border-t-current"></span>
+              }
+              {{ user.enabled ? 'Desactivar' : 'Activar' }}
+            </button>
+          </div>
+        </ng-template>
+      </app-data-table>
+
+      @if (!loading() && totalElements() > 0) {
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+          <p>Mostrando {{ rangeStart() }}–{{ rangeEnd() }} de {{ totalElements() }}</p>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <label class="flex items-center gap-2">
+              Filas
+              <select
+                class="rounded-lg border border-white/10 bg-slate-950/60 px-2 py-1.5 text-xs text-slate-200 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+                (change)="changeSize($event)"
+              >
+                @for (option of pageSizeOptions; track option) {
+                  <option [value]="option" [selected]="option === size()">{{ option }}</option>
+                }
+              </select>
+            </label>
+
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="rounded-lg border border-white/10 px-3 py-1.5 font-medium text-slate-300 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                [disabled]="page() === 0 || loading()"
+                (click)="changePage(page() - 1)"
+              >
+                Anterior
+              </button>
+              <span>Página {{ page() + 1 }} de {{ totalPages() || 1 }}</span>
+              <button
+                type="button"
+                class="rounded-lg border border-white/10 px-3 py-1.5 font-medium text-slate-300 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                [disabled]="page() + 1 >= totalPages() || loading()"
+                (click)="changePage(page() + 1)"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+</section>
+
+<app-slide-over-panel
+  [open]="panelOpen()"
+  [title]="editing() ? 'Editar usuario' : 'Nuevo usuario'"
+  [description]="editing() ? 'Actualiza los datos y roles de la cuenta.' : 'Crea una cuenta con su contraseña inicial y roles.'"
+  (closed)="closePanel()"
+>
+  @if (panelOpen()) {
+    <app-user-form [user]="editing()" (saved)="onSaved()" />
+  }
+
+  @if (panelOpen()) {
+    <div panelFooter class="flex items-center justify-end gap-3">
+      <button
+        type="button"
+        class="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:text-white"
+        (click)="closePanel()"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:opacity-60"
+        [disabled]="isSaving() || isFormInvalid()"
+        (click)="saveUser()"
+      >
+        @if (isSaving()) {
+          <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+        }
+        {{ isSaving() ? 'Guardando…' : editing() ? 'Guardar cambios' : 'Crear usuario' }}
+      </button>
+    </div>
+  }
+</app-slide-over-panel>

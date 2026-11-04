@@ -1,0 +1,56 @@
+@if (loading()) {
+  <div class="rounded-xl border border-white/10 bg-ink-900/40 p-5">
+    <app-skeleton-loader [rows]="5" [columns]="skeletonColumns()" />
+  </div>
+} @else if (rows().length === 0) {
+  <app-empty-state
+    [title]="emptyTitle()"
+    [message]="emptyMessage()"
+    [actionLabel]="emptyActionLabel()"
+    (action)="emptyAction.emit()"
+  />
+} @else {
+  <div
+    class="table-scroll max-h-[calc(100vh_-_22rem)] overflow-auto overscroll-contain rounded-xl border border-white/10 bg-ink-900/20"
+    tabindex="0"
+    role="region"
+    aria-label="Tabla de datos"
+  >
+    <table class="min-w-full divide-y divide-white/10 text-sm">
+      <thead class="sticky top-0 z-10 bg-ink-900">
+        <tr>
+          @for (column of columns(); track column.key) {
+            <th
+              scope="col"
+              class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+              [class]="columnClasses(column)"
+            >
+              {{ column.header }}
+            </th>
+          }
+          @if (rowActions()) {
+            <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Acciones
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/5 bg-ink-900/40">
+        @for (row of rows(); track trackBy()(row)) {
+          <tr class="transition hover:bg-white/5" (click)="rowClick.emit(row)">
+            @for (column of columns(); track column.key) {
+              <td class="px-4 py-3 text-slate-300" [class]="columnClasses(column)">
+                {{ displayValue(column, row) }}
+              </td>
+            }
+            @if (rowActions(); as actions) {
+              <td class="px-4 py-3 text-right" (click)="$event.stopPropagation()">
+                <ng-container [ngTemplateOutlet]="actions" [ngTemplateOutletContext]="{ $implicit: row }" />
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

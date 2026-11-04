@@ -1,0 +1,197 @@
+<section id="inicio" class="relative overflow-hidden bg-ink-950" aria-labelledby="hero-title">
+  <div class="grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div class="hero-glow pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+  <div class="section-shell relative grid items-center gap-14 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
+    <div>
+      <p
+        class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300"
+      >
+        <span class="relative flex h-2 w-2" aria-hidden="true">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-300 opacity-60"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-teal-300"></span>
+        </span>
+        Consultoría y Desarrollo de Software en Zapopan, Jalisco.
+      </p>
+
+      <h1
+        id="hero-title"
+        class="mt-6 text-4xl leading-[1.08] font-semibold tracking-tight text-balance text-white sm:text-5xl"
+      >
+        Ingeniería de Software y <span class="text-gradient">Automatización</span> para Operaciones
+        Complejas.
+      </h1>
+
+      <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
+        Ayudamos a corporativos y empresas tradicionales a modernizar sistemas legacy, ordenar sus
+        procesos operativos y escalar su arquitectura con seguridad de grado bancario.
+      </p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a
+          href="#contacto"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3.5 text-sm font-semibold text-ink-950 transition hover:bg-sky-400"
+        >
+          Agendar Auditoría Técnica Gratuita
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <a
+          href="#casos"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-3.5 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/5"
+        >
+          Ver Casos de Estudio
+        </a>
+      </div>
+
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3">
+        @for (capability of capabilities; track capability) {
+          <li class="flex items-center gap-2 text-sm text-slate-400">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-teal-300" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            {{ capability }}
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="relative mx-auto w-full max-w-xl lg:mx-0" aria-hidden="true">
+      <div class="absolute -inset-6 rounded-[2rem] bg-sky-400/10 blur-2xl"></div>
+
+      <div class="relative rounded-2xl border border-white/10 bg-ink-900/90 p-3 shadow-2xl shadow-sky-950/40">
+        <div class="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2">
+          <div class="flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full bg-rose-400/80"></span>
+            <span class="h-2 w-2 rounded-full bg-amber-300/80"></span>
+            <span class="h-2 w-2 rounded-full bg-emerald-300/80"></span>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500">ops.garzasp.internal</span>
+          <span class="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+            Producción
+          </span>
+        </div>
+
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+            <p class="text-[11px] text-slate-400">Disponibilidad</p>
+            <p class="mt-2 text-2xl font-semibold text-white">99.98%</p>
+            <p class="mt-1 flex items-center gap-1 text-[11px] text-emerald-300">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+              </svg>
+              +0.02 pts este mes
+            </p>
+          </div>
+          <div class="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+            <p class="text-[11px] text-slate-400">Latencia p95</p>
+            <p class="mt-2 text-2xl font-semibold text-white">142 ms</p>
+            <p class="mt-1 flex items-center gap-1 text-[11px] text-sky-300">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+              18% menos que ayer
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-xl border border-white/5 bg-white/[0.03] p-4">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-medium text-slate-300">Volumen transaccional</p>
+            <span class="text-[10px] text-slate-500">Últimas 24 h</span>
+          </div>
+          <svg viewBox="0 0 320 96" class="mt-3 w-full" role="presentation">
+            <defs>
+              <linearGradient id="hero-area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 76 L24 68 L48 71 L72 55 L96 60 L120 44 L144 49 L168 32 L192 38 L216 24 L240 30 L264 18 L288 22 L312 12 L320 14 L320 96 L0 96 Z"
+              fill="url(#hero-area)"
+            />
+            <path
+              d="M0 76 L24 68 L48 71 L72 55 L96 60 L120 44 L144 49 L168 32 L192 38 L216 24 L240 30 L264 18 L288 22 L312 12 L320 14"
+              fill="none"
+              stroke="#7dd3fc"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="264" cy="18" r="3" fill="#7dd3fc" />
+          </svg>
+          <div class="mt-1 flex justify-between text-[9px] text-slate-600">
+            <span>00:00</span>
+            <span>06:00</span>
+            <span>12:00</span>
+            <span>18:00</span>
+          </div>
+        </div>
+
+        <div class="mt-3 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+          <div class="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+            <p class="text-xs font-medium text-slate-300">Automatizaciones operativas</p>
+            <div class="mt-3 space-y-2.5">
+              <div>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                  <span>Validación de documentos</span>
+                  <span class="text-teal-300">92%</span>
+                </div>
+                <div class="mt-1 h-1 rounded-full bg-white/10">
+                  <div class="h-1 w-[92%] rounded-full bg-teal-300"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                  <span>Conciliación de pagos</span>
+                  <span class="text-sky-300">84%</span>
+                </div>
+                <div class="mt-1 h-1 rounded-full bg-white/10">
+                  <div class="h-1 w-[84%] rounded-full bg-sky-300"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[10px] text-slate-400">
+                  <span>Clasificación de tickets</span>
+                  <span class="text-indigo-300">78%</span>
+                </div>
+                <div class="mt-1 h-1 rounded-full bg-white/10">
+                  <div class="h-1 w-[78%] rounded-full bg-indigo-300"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-between rounded-xl border border-sky-300/20 bg-sky-400/[0.06] p-4">
+            <div>
+              <p class="text-[10px] tracking-wide text-sky-200 uppercase">Revisión humana</p>
+              <p class="mt-2 text-sm leading-snug text-white">3 decisiones esperan aprobación del equipo.</p>
+            </div>
+            <div class="mt-4 flex -space-x-2">
+              <span class="grid h-7 w-7 place-items-center rounded-full border border-ink-900 bg-slate-600 text-[9px] font-semibold text-white">AL</span>
+              <span class="grid h-7 w-7 place-items-center rounded-full border border-ink-900 bg-slate-500 text-[9px] font-semibold text-white">RM</span>
+              <span class="grid h-7 w-7 place-items-center rounded-full border border-ink-900 bg-slate-400 text-[9px] font-semibold text-ink-950">+2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="absolute -top-4 -right-3 hidden items-center gap-2 rounded-full border border-white/10 bg-ink-800/95 px-3.5 py-2 text-[11px] font-medium text-slate-200 shadow-lg sm:flex"
+      >
+        <span class="h-2 w-2 rounded-full bg-teal-300"></span>
+        On-premise · Docker
+      </div>
+      <div
+        class="absolute -bottom-4 -left-3 hidden items-center gap-2 rounded-full border border-white/10 bg-ink-800/95 px-3.5 py-2 text-[11px] font-medium text-slate-200 shadow-lg sm:flex"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4 text-sky-300">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+        </svg>
+        Revisión operativa
+      </div>
+    </div>
+  </div>
+</section>

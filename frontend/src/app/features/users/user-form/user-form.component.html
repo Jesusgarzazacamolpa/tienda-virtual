@@ -1,0 +1,81 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="space-y-5" novalidate>
+  @if (error(); as apiError) {
+    <div class="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
+      {{ apiError.message }}
+    </div>
+  }
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <app-form-input
+      formControlName="firstName"
+      label="Nombre"
+      autocomplete="given-name"
+      [required]="true"
+      [maxlength]="100"
+      [error]="serverError('firstName')"
+    />
+
+    <app-form-input
+      formControlName="lastName"
+      label="Apellido"
+      autocomplete="family-name"
+      [maxlength]="100"
+      [error]="serverError('lastName')"
+    />
+  </div>
+
+  <app-form-input
+    formControlName="email"
+    label="Correo"
+    type="email"
+    placeholder="ana@empresa.com"
+    autocomplete="email"
+    [required]="true"
+    [maxlength]="255"
+    [error]="serverError('email')"
+  />
+
+  @if (isEdit()) {
+    <p class="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-xs leading-relaxed text-slate-400">
+      La contraseña no se modifica desde este formulario.
+    </p>
+  } @else {
+    <app-form-input
+      formControlName="password"
+      label="Contraseña inicial"
+      type="password"
+      autocomplete="new-password"
+      hint="Entre 8 y 72 caracteres."
+      [required]="true"
+      [maxlength]="72"
+      [error]="serverError('password')"
+    />
+  }
+
+  <fieldset class="space-y-2">
+    <legend class="text-sm font-medium text-slate-200">
+      Roles <span class="text-rose-400" aria-hidden="true">*</span>
+    </legend>
+
+    @for (role of roleOptions; track role.value) {
+      <label
+        class="flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3 transition hover:border-white/20"
+      >
+        <input
+          type="checkbox"
+          class="mt-0.5 h-4 w-4 rounded border-white/20 bg-slate-900 text-brand-500 focus:ring-2 focus:ring-brand-500/40"
+          [checked]="hasRole(role.value)"
+          (change)="toggleRole(role.value)"
+        />
+        <span>
+          <span class="block text-sm font-medium text-slate-200">{{ role.label }}</span>
+          <span class="block text-xs text-slate-500">{{ role.description }}</span>
+        </span>
+      </label>
+    }
+
+    @if (rolesInvalid() || serverError('roles')) {
+      <p class="text-xs text-rose-300">{{ serverError('roles') ?? 'Selecciona al menos un rol.' }}</p>
+    }
+  </fieldset>
+</form>

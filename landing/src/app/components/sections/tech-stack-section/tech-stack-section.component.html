@@ -1,0 +1,39 @@
+<section id="stack" class="border-y border-slate-200 bg-slate-50 py-20 sm:py-24">
+  <div class="section-shell">
+    <app-section-heading
+      eyebrow="Stack técnico"
+      title="Tecnología de grado empresarial, no atajos."
+      description="Construimos software sin atajos. Utilizamos lenguajes y frameworks de grado empresarial, garantizando que el código fuente que te entregamos sea seguro, mantenible y escalable."
+    />
+
+    <div class="sr-only">
+      Tecnologías del stack principal:
+      @for (technology of technologies; track technology.name) {
+        {{ technology.name }}@if (!$last) {, }
+      }
+    </div>
+
+    <div class="marquee relative mt-12 overflow-hidden" aria-hidden="true">
+      <div class="marquee-track flex w-max gap-3">
+        @for (technology of marquee; track $index) {
+          <span
+            class="inline-flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm"
+          >
+            <span class="h-2 w-2 rounded-full" [class]="technology.dot"></span>
+            {{ technology.name }}
+          </span>
+        }
+      </div>
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-50 to-transparent"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-50 to-transparent"></div>
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500">
+      <span>Arquitecturas probadas en producción</span>
+      <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+      <span>Seguridad desde el diseño</span>
+      <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+      <span>Sin dependencias innecesarias</span>
+    </div>
+  </div>
+</section>

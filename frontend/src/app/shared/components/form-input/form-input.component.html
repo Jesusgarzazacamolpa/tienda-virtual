@@ -1,0 +1,32 @@
+<div class="space-y-1.5">
+  @if (label()) {
+    <label [for]="inputId()" class="block text-sm font-medium text-slate-200">
+      {{ label() }}
+      @if (required()) {
+        <span class="text-rose-400" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <input
+    [id]="inputId()"
+    [type]="type()"
+    [value]="value()"
+    [placeholder]="placeholder()"
+    [autocomplete]="autocomplete()"
+    [attr.maxlength]="maxlength()"
+    [attr.required]="required() ? '' : null"
+    [attr.aria-invalid]="showError()"
+    [attr.aria-describedby]="showError() || hint() ? descriptionId() : null"
+    [disabled]="disabled()"
+    [class]="inputClasses()"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+
+  @if (showError()) {
+    <p [id]="descriptionId()" class="text-xs text-rose-300">{{ message() }}</p>
+  } @else if (hint()) {
+    <p [id]="descriptionId()" class="text-xs text-slate-400">{{ hint() }}</p>
+  }
+</div>

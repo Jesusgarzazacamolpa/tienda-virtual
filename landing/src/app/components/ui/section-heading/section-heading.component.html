@@ -1,0 +1,29 @@
+<div
+  class="max-w-3xl"
+  [class.mx-auto]="align() === 'center'"
+  [class.text-center]="align() === 'center'"
+>
+  <p
+    class="eyebrow"
+    [class.text-sky-600]="tone() === 'light'"
+    [class.text-signal-300]="tone() === 'dark'"
+  >
+    {{ eyebrow() }}
+  </p>
+  <h2
+    class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+    [class.text-slate-950]="tone() === 'light'"
+    [class.text-white]="tone() === 'dark'"
+  >
+    {{ title() }}
+  </h2>
+  @if (description()) {
+    <p
+      class="mt-4 text-base leading-relaxed sm:text-lg"
+      [class.text-slate-600]="tone() === 'light'"
+      [class.text-slate-300]="tone() === 'dark'"
+    >
+      {{ description() }}
+    </p>
+  }
+</div>
